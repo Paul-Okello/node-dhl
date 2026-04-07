@@ -1,0 +1,43 @@
+{
+  "name": "@dhl/shipment-tracking",
+  "version": "1.0.0",
+  "description": "Type-safe TypeScript SDK for DHL Shipment Tracking API",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "dhl",
+    "shipment",
+    "tracking",
+    "typescript",
+    "sdk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Paul-Okello/node-dhl.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
