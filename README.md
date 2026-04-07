@@ -15,7 +15,7 @@ A type-safe TypeScript SDK for the DHL Shipment Tracking API. Works in both Node
 ## Installation
 
 ```bash
-npm install @dhl/shipment-tracking
+npm install dhl-ts
 ```
 
 ## Quick Start
