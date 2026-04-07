@@ -23,7 +23,7 @@ npm install dhl-ts
 ### Basic Usage
 
 ```typescript
-import { DHLClient, DHLError } from '@dhl/shipment-tracking';
+import { DHLClient, DHLError } from 'dhl-ts';
 
 // Initialize the client
 const client = new DHLClient({
@@ -136,7 +136,7 @@ const list = await client.listShipments({
 ## Error Handling
 
 ```typescript
-import { DHLError } from '@dhl/shipment-tracking';
+import { DHLError } from 'dhl-ts';
 
 try {
   const tracking = await client.getShipment({
@@ -183,7 +183,7 @@ import type {
   TrackingResponse,
   Shipment,
   TrackingTimestamp
-} from '@dhl/shipment-tracking';
+} from 'dhl-ts';
 
 const params: GetShipmentParams = {
   searchType: 'shipmentID', // TypeScript ensures valid option
