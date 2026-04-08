@@ -1,6 +1,7 @@
 import type {
   ClientConfig,
   Environment,
+  ExpressEnvironment,
   ResolvedClientConfig,
 } from './types/config.js';
 import type {
@@ -9,6 +10,39 @@ import type {
   TrackingResponse,
   ListShipmentsResponse,
 } from './types/shipment.js';
+import type {
+  ExpressCreateShipmentRequest,
+  ExpressCreateShipmentResponse,
+  ExpressTrackingOptions,
+  ExpressTrackingResponse,
+  ExpressProductsRequest,
+  ExpressProductsResponse,
+  ExpressAddressValidateRequest,
+  ExpressAddressValidateResponse,
+  ExpressRatesRequest,
+  ExpressRatesResponse,
+  ExpressLandedCostRequest,
+  ExpressLandedCostResponse,
+  ExpressCreatePickupRequest,
+  ExpressCreatePickupResponse,
+  ExpressUpdatePickupRequest,
+  ExpressUpdatePickupResponse,
+  ExpressAllocateIdentifiersRequest,
+  ExpressAllocateIdentifiersResponse,
+  ExpressUploadImageRequest,
+  ExpressUploadImageResponse,
+  ExpressUploadInvoiceDataRequest,
+  ExpressUploadInvoiceDataResponse,
+  ExpressAddPieceRequest,
+  ExpressAddPieceResponse,
+  ExpressEarlyShipmentScreeningRequest,
+  ExpressEarlyShipmentScreeningResponse,
+  ExpressProofOfDeliveryResponse,
+  ExpressReferenceDataResponse,
+  ExpressGetImageResponse,
+  ExpressGetImageOptions,
+  ExpressTrackMultipleOptions,
+} from './types/express.js';
 import { makeRequest } from './utils/request.js';
 
 /**
@@ -70,11 +104,14 @@ export class DHLClient {
 
     const environment: Environment = options.environment || 'production';
     const baseUrl = this.resolveBaseUrl(environment);
+    const expressEnvironment: ExpressEnvironment = options.expressEnvironment || 'production';
+    const expressBaseUrl = this.resolveExpressBaseUrl(expressEnvironment);
 
     this.config = {
       apiKey: options.apiKey,
       baseUrl,
       environment,
+      expressBaseUrl,
     };
   }
 
@@ -203,13 +240,376 @@ export class DHLClient {
   }
 
   /**
-   * Get the current environment (production or sandbox)
+   * Create a new DHL Express shipment using the MyDHL API.
    *
-   * @returns The current environment setting
+   * @param payload - Request payload for MyDHL Express shipment creation
    */
-  getEnvironment(): Environment {
-    return this.config.environment;
+  async createExpressShipment(
+    payload: ExpressCreateShipmentRequest
+  ): Promise<ExpressCreateShipmentResponse> {
+    return makeRequest<ExpressCreateShipmentResponse, ExpressCreateShipmentRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/shipments',
+      body: payload,
+      useExpress: true,
+    });
   }
+
+  /**
+   * Retrieve DHL Express shipment tracking details from the MyDHL API.
+   *
+   * @param shipmentNumber - DHL Express shipment number
+   * @param options - Optional tracking query parameters
+   */
+  async getExpressShipmentTracking(
+    shipmentNumber: string,
+    options?: ExpressTrackingOptions
+  ): Promise<ExpressTrackingResponse> {
+    const queryParams: Record<string, string> = {};
+
+    if (options?.trackingView) {
+      queryParams.trackingView = options.trackingView;
+    }
+    if (options?.levelOfDetail) {
+      queryParams.levelOfDetail = options.levelOfDetail;
+    }
+    if (options?.shipperAccountNumber) {
+      queryParams.shipperAccountNumber = options.shipperAccountNumber;
+    }
+
+    return makeRequest<ExpressTrackingResponse>(this.config, {
+      method: 'GET',
+      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/tracking`,
+      queryParams,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Retrieve available DHL Express products for a shipment.
+   *
+   * @param params - Request payload for MyDHL Express products lookup
+   */
+  async getExpressProducts(
+    params: ExpressProductsRequest
+  ): Promise<ExpressProductsResponse> {
+    return makeRequest<ExpressProductsResponse, ExpressProductsRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/products',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Validate a DHL Express address using the MyDHL API.
+   *
+   * @param params - Address validation request payload
+   */
+  async validateExpressAddress(
+    params: ExpressAddressValidateRequest
+  ): Promise<ExpressAddressValidateResponse> {
+    return makeRequest<ExpressAddressValidateResponse, ExpressAddressValidateRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/address_validate',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Get DHL Express rates using the MyDHL API.
+   *
+   * @param params - Rates request payload
+   */
+  async getExpressRates(
+    params: ExpressRatesRequest
+  ): Promise<ExpressRatesResponse> {
+    return makeRequest<ExpressRatesResponse, ExpressRatesRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/rates',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Get DHL Express landed cost using the MyDHL API.
+   *
+   * @param params - Landed cost request payload
+   */
+  async getExpressLandedCost(
+    params: ExpressLandedCostRequest
+  ): Promise<ExpressLandedCostResponse> {
+    return makeRequest<ExpressLandedCostResponse, ExpressLandedCostRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/landedcost',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Create a DHL Express pickup using the MyDHL API.
+   *
+   * @param params - Pickup creation request payload
+   */
+  async createExpressPickup(
+    params: ExpressCreatePickupRequest
+  ): Promise<ExpressCreatePickupResponse> {
+    return makeRequest<ExpressCreatePickupResponse, ExpressCreatePickupRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/pickups',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Update a DHL Express pickup using the MyDHL API.
+   *
+   * @param dispatchConfirmationNumber - Pickup dispatch confirmation number
+   * @param params - Pickup update request payload
+   */
+  async updateExpressPickup(
+    dispatchConfirmationNumber: string,
+    params: ExpressUpdatePickupRequest
+  ): Promise<ExpressUpdatePickupResponse> {
+    return makeRequest<ExpressUpdatePickupResponse, ExpressUpdatePickupRequest>(this.config, {
+      method: 'PATCH',
+      endpoint: `/pickups/${encodeURIComponent(dispatchConfirmationNumber)}`,
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Cancel a DHL Express pickup using the MyDHL API.
+   *
+   * @param dispatchConfirmationNumber - Pickup dispatch confirmation number
+   * @param requestorName - Name of the requestor
+   * @param reason - Reason for cancellation
+   */
+  async cancelExpressPickup(
+    dispatchConfirmationNumber: string,
+    requestorName: string,
+    reason: string
+  ): Promise<void> {
+    return makeRequest<void>(this.config, {
+      method: 'DELETE',
+      endpoint: `/pickups/${encodeURIComponent(dispatchConfirmationNumber)}`,
+      queryParams: {
+        requestorName: encodeURIComponent(requestorName),
+        reason: encodeURIComponent(reason),
+      },
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Allocate identifiers for DHL Express shipments using the MyDHL API.
+   *
+   * @param params - Identifier allocation request payload
+   */
+  async allocateExpressIdentifiers(
+    params: ExpressAllocateIdentifiersRequest
+  ): Promise<ExpressAllocateIdentifiersResponse> {
+    return makeRequest<ExpressAllocateIdentifiersResponse, ExpressAllocateIdentifiersRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/identifiers',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Upload image for a DHL Express shipment using the MyDHL API.
+   *
+   * @param shipmentNumber - Shipment identification number
+   * @param params - Image upload request payload
+   */
+  async uploadExpressImage(
+    shipmentNumber: string,
+    params: ExpressUploadImageRequest
+  ): Promise<ExpressUploadImageResponse> {
+    return makeRequest<ExpressUploadImageResponse, ExpressUploadImageRequest>(this.config, {
+      method: 'POST',
+      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/upload-image`,
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Upload invoice data for a DHL Express shipment using the MyDHL API.
+   *
+   * @param shipmentNumber - Shipment identification number
+   * @param params - Invoice data upload request payload
+   */
+  async uploadExpressInvoiceData(
+    shipmentNumber: string,
+    params: ExpressUploadInvoiceDataRequest
+  ): Promise<ExpressUploadInvoiceDataResponse> {
+    return makeRequest<ExpressUploadInvoiceDataResponse, ExpressUploadInvoiceDataRequest>(this.config, {
+      method: 'POST',
+      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/upload-invoice-data`,
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Upload invoice data without shipment number using the MyDHL API.
+   *
+   * @param params - Invoice data upload request payload
+   */
+  async uploadExpressInvoiceDataWithoutSID(
+    params: ExpressUploadInvoiceDataRequest
+  ): Promise<ExpressUploadInvoiceDataResponse> {
+    return makeRequest<ExpressUploadInvoiceDataResponse, ExpressUploadInvoiceDataRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/invoices/upload-invoice-data',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Add a piece to a DHL Express shipment using the MyDHL API.
+   *
+   * @param shipmentNumber - Shipment identification number
+   * @param params - Add piece request payload
+   */
+  async addExpressPiece(
+    shipmentNumber: string,
+    params: ExpressAddPieceRequest
+  ): Promise<ExpressAddPieceResponse> {
+    return makeRequest<ExpressAddPieceResponse, ExpressAddPieceRequest>(this.config, {
+      method: 'POST',
+      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/add-piece`,
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Perform early shipment screening for a DHL Express shipment using the MyDHL API.
+   *
+   * @param params - Early shipment screening request payload
+   */
+  async earlyExpressShipmentScreening(
+    params: ExpressEarlyShipmentScreeningRequest
+  ): Promise<ExpressEarlyShipmentScreeningResponse> {
+    return makeRequest<ExpressEarlyShipmentScreeningResponse, ExpressEarlyShipmentScreeningRequest>(this.config, {
+      method: 'POST',
+      endpoint: '/early-shipment-screening',
+      body: params,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Get proof of delivery for a DHL Express shipment using the MyDHL API.
+   *
+   * @param shipmentNumber - Shipment identification number
+   */
+  async getExpressProofOfDelivery(
+    shipmentNumber: string
+  ): Promise<ExpressProofOfDeliveryResponse> {
+    return makeRequest<ExpressProofOfDeliveryResponse>(this.config, {
+      method: 'GET',
+      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/proof-of-delivery`,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Get reference data for MyDHL API services.
+   */
+  async getExpressReferenceData(): Promise<ExpressReferenceDataResponse> {
+    return makeRequest<ExpressReferenceDataResponse>(this.config, {
+      method: 'GET',
+      endpoint: '/reference-data',
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Get image/document for a DHL Express shipment using the MyDHL API.
+   *
+   * @param shipmentNumber - Shipment identification number
+   * @param options - Query parameters for image retrieval
+   */
+  async getExpressImage(
+    shipmentNumber: string,
+    options?: ExpressGetImageOptions
+  ): Promise<ExpressGetImageResponse> {
+    const queryParams: Record<string, string> = {};
+
+    if (options?.shipperAccountNumber) {
+      queryParams.shipperAccountNumber = options.shipperAccountNumber;
+    }
+    if (options?.typeCode && options.typeCode.length > 0) {
+      queryParams.typeCode = options.typeCode.join(',');
+    }
+    if (options?.pickupYearAndMonth) {
+      queryParams.pickupYearAndMonth = options.pickupYearAndMonth;
+    }
+    if (options?.encodingFormat) {
+      queryParams.encodingFormat = options.encodingFormat;
+    }
+    if (options?.allInOnePDF !== undefined) {
+      queryParams.allInOnePDF = String(options.allInOnePDF);
+    }
+    if (options?.compressedPackage !== undefined) {
+      queryParams.compressedPackage = String(options.compressedPackage);
+    }
+
+    return makeRequest<ExpressGetImageResponse>(this.config, {
+      method: 'GET',
+      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/get-image`,
+      queryParams,
+      useExpress: true,
+    });
+  }
+
+  /**
+   * Track multiple DHL Express shipments using the MyDHL API.
+   *
+   * @param options - Query parameters for tracking multiple shipments
+   */
+  async trackExpressMultipleShipments(
+    options?: ExpressTrackMultipleOptions
+  ): Promise<ExpressTrackingResponse> {
+    const queryParams: Record<string, string> = {};
+
+    if (options?.shipmentReference) {
+      queryParams.shipmentReference = options.shipmentReference;
+    }
+    if (options?.shipperAccountNumber) {
+      queryParams.shipperAccountNumber = options.shipperAccountNumber;
+    }
+    if (options?.dateRangeFrom) {
+      queryParams.dateRangeFrom = options.dateRangeFrom;
+    }
+    if (options?.dateRangeTo) {
+      queryParams.dateRangeTo = options.dateRangeTo;
+    }
+    if (options?.trackingView) {
+      queryParams.trackingView = options.trackingView;
+    }
+    if (options?.levelOfDetail) {
+      queryParams.levelOfDetail = options.levelOfDetail;
+    }
+
+    return makeRequest<ExpressTrackingResponse>(this.config, {
+      method: 'GET',
+      endpoint: '/tracking',
+      queryParams,
+      useExpress: true,
+    });
+  }
+
 
   /**
    * Get the base URL being used for API requests
@@ -224,18 +624,41 @@ export class DHLClient {
    * Resolve the base URL from the environment setting
    * @internal
    */
- private resolveBaseUrl(environment: Environment): string {
-  switch (environment) {
-    case 'production':
-      return 'https://api.dhl.com/dgff/transportation/v2';
+   /**
+   * Resolve the base URL from the environment setting
+   * @internal
+   */
+  private resolveBaseUrl(environment: Environment): string {
+    switch (environment) {
+      case 'production':
+        return 'https://api.dhl.com/dgff/transportation/v2';
 
-    case 'sandbox':
-      return 'https://api-sandbox.dhl.com/dgff/transportation/v2';
+      case 'sandbox':
+        return 'https://api-sandbox.dhl.com/dgff/transportation/v2';
 
-    default: {
-      const exhaustive: never = environment;
-      throw new Error(`Unknown environment: ${exhaustive}`);
+      default: {
+        const exhaustive: never = environment;
+        throw new Error(`Unknown environment: ${exhaustive}`);
+      }
     }
   }
-}
+
+  /**
+   * Resolve the MyDHL Express base URL from the environment setting
+   * @internal
+   */
+  private resolveExpressBaseUrl(environment: ExpressEnvironment): string {
+    switch (environment) {
+      case 'production':
+        return 'https://express.api.dhl.com/mydhlapi';
+
+      case 'test':
+        return 'https://express.api.dhl.com/mydhlapi/test';
+
+      default: {
+        const exhaustive: never = environment;
+        throw new Error(`Unknown express environment: ${exhaustive}`);
+      }
+    }
+  }
 }

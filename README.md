@@ -11,6 +11,7 @@ A type-safe TypeScript SDK for the DHL Shipment Tracking API. Works in both Node
 - 🔐 **Environment Switching** — Easy switch between sandbox and production
 - ⚡ **Manual Error Handling** — Clean, predictable error handling without automatic retries
 - 🔌 **Extensible** — Simple to add new endpoints and methods
+- 🚚 **MyDHL Express Support** — Unified `DHLClient` can call the MyDHL Express API with `X-API-KEY`
 
 ## Installation
 
@@ -58,10 +59,16 @@ const prodClient = new DHLClient({
   apiKey: 'your-api-key'
 });
 
-// Sandbox
+// Sandbox tracking environment
 const sandboxClient = new DHLClient({
   apiKey: 'your-sandbox-key',
   environment: 'sandbox'
+});
+
+// MyDHL Express test environment
+const expressClient = new DHLClient({
+  apiKey: 'your-api-key',
+  expressEnvironment: 'test'
 });
 
 // Check current environment
@@ -130,6 +137,112 @@ const list = await client.listShipments({
   lastUpdateTo: '2024-08-05T23:59:59.000Z',
   size: 20,        // Results per page
   skipResults: 0   // Pagination offset
+});
+```
+
+### MyDHL Express methods
+
+These methods use the same `DHLClient` and the same `apiKey`, but call the MyDHL Express API using `X-API-KEY`.
+
+```typescript
+const client = new DHLClient({
+  apiKey: process.env.DHL_API_KEY,
+  expressEnvironment: 'production'
+});
+
+// Create shipment
+const shipment = await client.createExpressShipment({
+  plannedShippingDateAndTime: '2025-01-18T17:00:00GMT+01:00',
+  // ... full MyDHL payload
+});
+
+// Track single shipment
+const tracking = await client.getExpressShipmentTracking('1251820953', {
+  trackingView: 'shipment-details',
+  levelOfDetail: 'shipment'
+});
+
+// Track multiple shipments
+const multiTracking = await client.trackExpressMultipleShipments({
+  shipmentReference: 'ShipReferenceRCS03',
+  trackingView: 'shipment-details-only'
+});
+
+// Get products
+const products = await client.getExpressProducts({
+  // ... full MyDHL products request payload
+});
+
+// Get rates
+const rates = await client.getExpressRates({
+  // ... full MyDHL rates request payload
+});
+
+// Get landed cost
+const landedCost = await client.getExpressLandedCost({
+  // ... full MyDHL landed cost request payload
+});
+
+// Validate address
+const validation = await client.validateExpressAddress({
+  // ... full MyDHL address validation request payload
+});
+
+// Create pickup
+const pickup = await client.createExpressPickup({
+  // ... full MyDHL pickup request payload
+});
+
+// Update pickup
+const updatedPickup = await client.updateExpressPickup('dispatch123', {
+  // ... full MyDHL update pickup payload
+});
+
+// Cancel pickup
+await client.cancelExpressPickup('dispatch123', 'John Doe', 'no longer needed');
+
+// Allocate identifiers
+const identifiers = await client.allocateExpressIdentifiers({
+  // ... full MyDHL identifiers request payload
+});
+
+// Upload image
+const imageUpload = await client.uploadExpressImage('1234567890', {
+  // ... full MyDHL image upload payload
+});
+
+// Upload invoice data
+const invoiceUpload = await client.uploadExpressInvoiceData('1234567890', {
+  // ... full MyDHL invoice data payload
+});
+
+// Upload invoice data without SID
+const invoiceUploadNoSID = await client.uploadExpressInvoiceDataWithoutSID({
+  // ... full MyDHL invoice data payload
+});
+
+// Add piece
+const addPiece = await client.addExpressPiece('1234567890', {
+  // ... full MyDHL add piece payload
+});
+
+// Early shipment screening
+const screening = await client.earlyExpressShipmentScreening({
+  // ... full MyDHL screening payload
+});
+
+// Get proof of delivery
+const pod = await client.getExpressProofOfDelivery('1234567890');
+
+// Get reference data
+const refData = await client.getExpressReferenceData();
+
+// Get image/document
+const image = await client.getExpressImage('1234567890', {
+  shipperAccountNumber: '848811505',
+  typeCode: ['waybill', 'commercial-invoice'],
+  encodingFormat: 'tiff',
+  allInOnePDF: true
 });
 ```
 

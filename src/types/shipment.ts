@@ -41,9 +41,9 @@ export interface GetShipmentParams {
   /**
    * The search value corresponding to the search type
    * @example
-   * // For shipmentID type:
+   * For shipmentID type:
    * value: 'S2400127053'
-   * // For housebill type:
+   * For housebill type:
    * value: 'X00016084'
    */
   value: string;
@@ -51,6 +51,7 @@ export interface GetShipmentParams {
 
 /**
  * Location information with airport/IATA code and UNLOCODE
+ * Based on OpenAPI schemas: origin, destination, portOfLoading, portOfUnloading
  */
 export interface Location {
   /**
@@ -60,7 +61,7 @@ export interface Location {
   airportCode?: string;
 
   /**
-   * UNLOCODE or five-character DHL station code
+   * UNLOCODE or five-character DHL station code (required)
    * @example 'SGSIN'
    */
   locationCode: string;
@@ -72,10 +73,15 @@ export interface Location {
   locationName?: string;
 
   /**
-   * ISO country code (if applicable)
+   * ISO country code (for ocean PlaceOfAcceptance)
    * @example 'SG'
    */
   countryCode?: string;
+
+  /**
+   * Additional location code for ocean shipments
+   */
+  locationCodeUN?: string;
 }
 
 /**
@@ -151,6 +157,7 @@ export interface Carrier {
 
 /**
  * Single timestamp/event in shipment tracking history
+ * Based on OpenAPI Timestamp schema
  */
 export interface TrackingTimestamp {
   /**
@@ -161,13 +168,13 @@ export interface TrackingTimestamp {
   timestampCode?: string;
 
   /**
-   * Human-readable status description
+   * Human-readable status description (required)
    * @example 'Estimated Delivery'
    */
   timestampDescription: string;
 
   /**
-   * Local date and time of the event
+   * Local date and time of the event (required)
    * @example '2021-02-12T06:27:00.000Z'
    */
   timestampDateTime: string;
@@ -289,6 +296,7 @@ export interface TransportUnit {
 
 /**
  * Single leg of a shipment's journey
+ * Based on OpenAPI transportLegs schema
  */
 export interface TransportLeg {
   /**
@@ -405,10 +413,11 @@ export interface Emissions {
 
 /**
  * Complete shipment information
+ * Based on OpenAPI Shipment schema - some fields may be optional based on user type and shipment status
  */
 export interface Shipment {
   /**
-   * Housebill number
+   * Housebill number (required)
    * @example 'Q317839'
    */
   housebillNumber: string;
@@ -426,10 +435,10 @@ export interface Shipment {
    */
   phase?: ShipmentPhase;
 
-  /** Origin location */
+  /** Origin location (required) */
   origin: Location;
 
-  /** Destination location */
+  /** Destination location (required) */
   destination: Location;
 
   /**
@@ -445,7 +454,7 @@ export interface Shipment {
   consignee?: ShippingParty;
 
   /**
-   * Mode of transport
+   * Mode of transport (required)
    * @example 'AIR'
    */
   modeOfTransport: string;
@@ -456,22 +465,22 @@ export interface Shipment {
   totalPackages?: string;
 
   /**
-   * Total shipment weight
+   * Total shipment weight (required)
    */
   totalWeight: string;
 
   /**
-   * Unit of measurement for weight (default: KGM - kilograms)
+   * Unit of measurement for weight (required, default: KGM - kilograms)
    */
   totalWeightUom: string;
 
   /**
-   * Total shipment volume
+   * Total shipment volume (required)
    */
   totalVolume: number;
 
   /**
-   * Unit of measurement for volume (default: MTQ - cubic meters)
+   * Unit of measurement for volume (required, default: MTQ - cubic meters)
    */
   totalVolumeUom: string;
 
@@ -536,8 +545,8 @@ export interface Shipment {
   /** Last known event */
   lastEvent?: LastEvent;
 
-  /** All tracking events/timestamps */
-  timestamps?: TrackingTimestamp[];
+  /** All tracking events/timestamps (required) */
+  timestamps: TrackingTimestamp[];
 
   /** Masterbill information (for registered users) */
   masterbills?: Array<{
@@ -549,7 +558,7 @@ export interface Shipment {
   transportUnits?: TransportUnit[];
 
   /** Journey legs (flights, vessel voyages, etc.) */
-  transportLegs: TransportLeg[];
+  transportLegs?: TransportLeg[];
 
   /** Any exceptions or issues with the shipment */
   exceptions?: ShipmentException[];
@@ -566,20 +575,23 @@ export interface Shipment {
 
 /**
  * Complete tracking response for a single shipment
+ * Based on OpenAPI ShipmentTracking response schema
  */
 export interface TrackingResponse {
   /**
    * The query identifier used in the request
+   * @example 'Q317839'
    */
   queryID?: string;
 
   /**
    * The type of query identifier
+   * @example 'housebill'
    */
-  queryIDType?: ShipmentSearchType;
+  queryIDType?: string;
 
   /**
-   * The shipment data
+   * The shipment data (required)
    */
   shipment: Shipment;
 }
@@ -671,31 +683,33 @@ export interface ListShipmentsParams {
 
 /**
  * Single shipment summary in list response
+ * Based on OpenAPI shipmentList schema
  */
 export interface ShipmentListItem {
   /**
    * Shipment ID
    */
-  shipmentID: string;
+  shipmentID?: string;
 
   /**
    * Housebill number
    */
-  housebill: string;
+  housebill?: string;
 
   /**
    * Current phase
    */
-  phase: ShipmentPhase;
+  phase?: ShipmentPhase;
 
   /**
    * URL to get full tracking details
    */
-  shipmentTrackingURL: string;
+  shipmentTrackingURL?: string;
 }
 
 /**
  * Response for list shipments query
+ * Based on OpenAPI ShipmentList_POST_response schema
  */
 export interface ListShipmentsResponse {
   /**

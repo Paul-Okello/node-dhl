@@ -32,6 +32,41 @@ export type {
   ShipmentListFilter,
 } from './types/shipment.js';
 
+// MyDHL Express types
+export type {
+	ExpressCreateShipmentRequest,
+	ExpressCreateShipmentResponse,
+	ExpressTrackingOptions,
+	ExpressTrackingResponse,
+	ExpressProductsRequest,
+	ExpressProductsResponse,
+	ExpressAddressValidateRequest,
+	ExpressAddressValidateResponse,
+	ExpressRatesRequest,
+	ExpressRatesResponse,
+	ExpressLandedCostRequest,
+	ExpressLandedCostResponse,
+	ExpressCreatePickupRequest,
+	ExpressCreatePickupResponse,
+	ExpressUpdatePickupRequest,
+	ExpressUpdatePickupResponse,
+	ExpressAllocateIdentifiersRequest,
+	ExpressAllocateIdentifiersResponse,
+	ExpressUploadImageRequest,
+	ExpressUploadImageResponse,
+	ExpressUploadInvoiceDataRequest,
+	ExpressUploadInvoiceDataResponse,
+	ExpressAddPieceRequest,
+	ExpressAddPieceResponse,
+	ExpressEarlyShipmentScreeningRequest,
+	ExpressEarlyShipmentScreeningResponse,
+	ExpressProofOfDeliveryResponse,
+	ExpressReferenceDataResponse,
+	ExpressGetImageResponse,
+	ExpressGetImageOptions,
+	ExpressTrackMultipleOptions,
+} from "./types/express.js";
+
 // Error types
 export type { ErrorCode, DHLErrorResponse } from './types/errors.js';
 export { isDHLError } from './types/errors.js';
