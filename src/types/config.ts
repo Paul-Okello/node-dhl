@@ -47,4 +47,5 @@ export interface ResolvedClientConfig {
 		baseUrl: string;
 		environment: Environment;
 		expressBaseUrl: string;
+		apiSecret?: string;
 	}

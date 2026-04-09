@@ -2,14 +2,14 @@
  * Standardized DHL error codes
  */
 export type ErrorCode =
-
-  | 'UNAUTHORIZED'
-  | 'SHIPMENT_NOT_FOUND'
-  | 'SERVER_ERROR'
-
-  | 'NETWORK_ERROR'
-  | 'INVALID_REQUEST'
-  | 'UNKNOWN_ERROR';
+		| "UNAUTHORIZED"
+		| "SHIPMENT_NOT_FOUND"
+		| "SERVER_ERROR"
+		| "NETWORK_ERROR"
+		| "INVALID_REQUEST"
+		| "UNKNOWN_ERROR"
+		| "RATE_LIMITED"
+		| "TIMEOUT";
 
 /**
  * Interface for serialized error objects (useful for JSON responses)

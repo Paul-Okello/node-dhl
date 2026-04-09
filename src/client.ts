@@ -247,12 +247,15 @@ export class DHLClient {
   async createExpressShipment(
     payload: ExpressCreateShipmentRequest
   ): Promise<ExpressCreateShipmentResponse> {
-    return makeRequest<ExpressCreateShipmentResponse, ExpressCreateShipmentRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/shipments',
-      body: payload,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressCreateShipmentResponse,
+					ExpressCreateShipmentRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: "/shipments",
+					body: payload,
+					apiType: "express",
+				});
   }
 
   /**
@@ -278,11 +281,11 @@ export class DHLClient {
     }
 
     return makeRequest<ExpressTrackingResponse>(this.config, {
-      method: 'GET',
-      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/tracking`,
-      queryParams,
-      useExpress: true,
-    });
+					method: "GET",
+					endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/tracking`,
+					queryParams,
+					apiType: "express",
+				});
   }
 
   /**
@@ -293,12 +296,15 @@ export class DHLClient {
   async getExpressProducts(
     params: ExpressProductsRequest
   ): Promise<ExpressProductsResponse> {
-    return makeRequest<ExpressProductsResponse, ExpressProductsRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/products',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<ExpressProductsResponse, ExpressProductsRequest>(
+					this.config,
+					{
+						method: "POST",
+						endpoint: "/products",
+						body: params,
+						apiType: "express",
+					},
+				);
   }
 
   /**
@@ -309,12 +315,15 @@ export class DHLClient {
   async validateExpressAddress(
     params: ExpressAddressValidateRequest
   ): Promise<ExpressAddressValidateResponse> {
-    return makeRequest<ExpressAddressValidateResponse, ExpressAddressValidateRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/address_validate',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressAddressValidateResponse,
+					ExpressAddressValidateRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: "/address_validate",
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -325,12 +334,15 @@ export class DHLClient {
   async getExpressRates(
     params: ExpressRatesRequest
   ): Promise<ExpressRatesResponse> {
-    return makeRequest<ExpressRatesResponse, ExpressRatesRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/rates',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<ExpressRatesResponse, ExpressRatesRequest>(
+					this.config,
+					{
+						method: "POST",
+						endpoint: "/rates",
+						body: params,
+						apiType: "express",
+					},
+				);
   }
 
   /**
@@ -341,12 +353,15 @@ export class DHLClient {
   async getExpressLandedCost(
     params: ExpressLandedCostRequest
   ): Promise<ExpressLandedCostResponse> {
-    return makeRequest<ExpressLandedCostResponse, ExpressLandedCostRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/landedcost',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<ExpressLandedCostResponse, ExpressLandedCostRequest>(
+					this.config,
+					{
+						method: "POST",
+						endpoint: "/landedcost",
+						body: params,
+						apiType: "express",
+					},
+				);
   }
 
   /**
@@ -357,12 +372,15 @@ export class DHLClient {
   async createExpressPickup(
     params: ExpressCreatePickupRequest
   ): Promise<ExpressCreatePickupResponse> {
-    return makeRequest<ExpressCreatePickupResponse, ExpressCreatePickupRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/pickups',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressCreatePickupResponse,
+					ExpressCreatePickupRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: "/pickups",
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -375,12 +393,15 @@ export class DHLClient {
     dispatchConfirmationNumber: string,
     params: ExpressUpdatePickupRequest
   ): Promise<ExpressUpdatePickupResponse> {
-    return makeRequest<ExpressUpdatePickupResponse, ExpressUpdatePickupRequest>(this.config, {
-      method: 'PATCH',
-      endpoint: `/pickups/${encodeURIComponent(dispatchConfirmationNumber)}`,
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressUpdatePickupResponse,
+					ExpressUpdatePickupRequest
+				>(this.config, {
+					method: "PATCH",
+					endpoint: `/pickups/${encodeURIComponent(dispatchConfirmationNumber)}`,
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -396,14 +417,14 @@ export class DHLClient {
     reason: string
   ): Promise<void> {
     return makeRequest<void>(this.config, {
-      method: 'DELETE',
-      endpoint: `/pickups/${encodeURIComponent(dispatchConfirmationNumber)}`,
-      queryParams: {
-        requestorName: encodeURIComponent(requestorName),
-        reason: encodeURIComponent(reason),
-      },
-      useExpress: true,
-    });
+					method: "DELETE",
+					endpoint: `/pickups/${encodeURIComponent(dispatchConfirmationNumber)}`,
+					queryParams: {
+						requestorName: encodeURIComponent(requestorName),
+						reason: encodeURIComponent(reason),
+					},
+					apiType: "express",
+				});
   }
 
   /**
@@ -414,12 +435,15 @@ export class DHLClient {
   async allocateExpressIdentifiers(
     params: ExpressAllocateIdentifiersRequest
   ): Promise<ExpressAllocateIdentifiersResponse> {
-    return makeRequest<ExpressAllocateIdentifiersResponse, ExpressAllocateIdentifiersRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/identifiers',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressAllocateIdentifiersResponse,
+					ExpressAllocateIdentifiersRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: "/identifiers",
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -432,12 +456,15 @@ export class DHLClient {
     shipmentNumber: string,
     params: ExpressUploadImageRequest
   ): Promise<ExpressUploadImageResponse> {
-    return makeRequest<ExpressUploadImageResponse, ExpressUploadImageRequest>(this.config, {
-      method: 'POST',
-      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/upload-image`,
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressUploadImageResponse,
+					ExpressUploadImageRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/upload-image`,
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -450,12 +477,15 @@ export class DHLClient {
     shipmentNumber: string,
     params: ExpressUploadInvoiceDataRequest
   ): Promise<ExpressUploadInvoiceDataResponse> {
-    return makeRequest<ExpressUploadInvoiceDataResponse, ExpressUploadInvoiceDataRequest>(this.config, {
-      method: 'POST',
-      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/upload-invoice-data`,
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressUploadInvoiceDataResponse,
+					ExpressUploadInvoiceDataRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/upload-invoice-data`,
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -466,12 +496,15 @@ export class DHLClient {
   async uploadExpressInvoiceDataWithoutSID(
     params: ExpressUploadInvoiceDataRequest
   ): Promise<ExpressUploadInvoiceDataResponse> {
-    return makeRequest<ExpressUploadInvoiceDataResponse, ExpressUploadInvoiceDataRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/invoices/upload-invoice-data',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressUploadInvoiceDataResponse,
+					ExpressUploadInvoiceDataRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: "/invoices/upload-invoice-data",
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -484,12 +517,15 @@ export class DHLClient {
     shipmentNumber: string,
     params: ExpressAddPieceRequest
   ): Promise<ExpressAddPieceResponse> {
-    return makeRequest<ExpressAddPieceResponse, ExpressAddPieceRequest>(this.config, {
-      method: 'POST',
-      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/add-piece`,
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<ExpressAddPieceResponse, ExpressAddPieceRequest>(
+					this.config,
+					{
+						method: "POST",
+						endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/add-piece`,
+						body: params,
+						apiType: "express",
+					},
+				);
   }
 
   /**
@@ -500,12 +536,15 @@ export class DHLClient {
   async earlyExpressShipmentScreening(
     params: ExpressEarlyShipmentScreeningRequest
   ): Promise<ExpressEarlyShipmentScreeningResponse> {
-    return makeRequest<ExpressEarlyShipmentScreeningResponse, ExpressEarlyShipmentScreeningRequest>(this.config, {
-      method: 'POST',
-      endpoint: '/early-shipment-screening',
-      body: params,
-      useExpress: true,
-    });
+    return makeRequest<
+					ExpressEarlyShipmentScreeningResponse,
+					ExpressEarlyShipmentScreeningRequest
+				>(this.config, {
+					method: "POST",
+					endpoint: "/early-shipment-screening",
+					body: params,
+					apiType: "express",
+				});
   }
 
   /**
@@ -517,10 +556,10 @@ export class DHLClient {
     shipmentNumber: string
   ): Promise<ExpressProofOfDeliveryResponse> {
     return makeRequest<ExpressProofOfDeliveryResponse>(this.config, {
-      method: 'GET',
-      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/proof-of-delivery`,
-      useExpress: true,
-    });
+					method: "GET",
+					endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/proof-of-delivery`,
+					apiType: "express",
+				});
   }
 
   /**
@@ -528,10 +567,10 @@ export class DHLClient {
    */
   async getExpressReferenceData(): Promise<ExpressReferenceDataResponse> {
     return makeRequest<ExpressReferenceDataResponse>(this.config, {
-      method: 'GET',
-      endpoint: '/reference-data',
-      useExpress: true,
-    });
+					method: "GET",
+					endpoint: "/reference-data",
+					apiType: "express",
+				});
   }
 
   /**
@@ -566,11 +605,11 @@ export class DHLClient {
     }
 
     return makeRequest<ExpressGetImageResponse>(this.config, {
-      method: 'GET',
-      endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/get-image`,
-      queryParams,
-      useExpress: true,
-    });
+					method: "GET",
+					endpoint: `/shipments/${encodeURIComponent(shipmentNumber)}/get-image`,
+					queryParams,
+					apiType: "express",
+				});
   }
 
   /**
@@ -603,11 +642,11 @@ export class DHLClient {
     }
 
     return makeRequest<ExpressTrackingResponse>(this.config, {
-      method: 'GET',
-      endpoint: '/tracking',
-      queryParams,
-      useExpress: true,
-    });
+					method: "GET",
+					endpoint: "/tracking",
+					queryParams,
+					apiType: "express",
+				});
   }
 
 
